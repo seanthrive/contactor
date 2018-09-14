@@ -1,4 +1,6 @@
 class ContactsController < ApplicationController
+	add_index :contacts, [:user_id], unique: true
+
 	def create 
 		@user = User.find(params[:user_id])
 		@contact = @user.contacts.create(contact_params)
