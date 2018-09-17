@@ -9,7 +9,7 @@ class UsersController < ApplicationController
 
 	def show
 		@user = User.find(params[:id])
-    render json: @user, root: true
+    	# render json: @user, root: true
 	end
 
 	def new 
@@ -28,21 +28,20 @@ class UsersController < ApplicationController
 	def update
 		uploaded_io = params[:user][:contacts_file]
 
-    filepath = Rails.root.join('public', 'uploads', uploaded_io.original_filename)
+    	filepath = Rails.root.join('public', 'uploads', uploaded_io.original_filename)
 
 		File.open(filepath, 'wb') do |file|
 			file.write(uploaded_io.read)
-    end
+    	end
 
-    File.foreach(filepath, "BEGIN:VCARD") do |card|
-      vcard = VCardigan.parse(card)
+	    File.foreach(filepath, "BEGIN:VCARD") do |card|
+	      vcard = VCardigan.parse(card)
 
-      unless vcard.fn.nil? || vcard.tel.nil?
-        contact_params = { name: vcard.fn[0].values[0], email: vcard.tel[0].values[0] }
-        @user.contacts.create(contact_params)
-      end
-
-    end
+		    unless vcard.fn.nil? || vcard.tel.nil?
+		      contact_params = { name: vcard.fn[0].values[0], email: vcard.tel[0].values[0] }
+		      @user.contacts.create(contact_params)
+		    end
+	    end
 
     redirect_to @user
 	end
@@ -52,8 +51,8 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
     end
 
-		def user_params
-			params.require(:user).permit(:username, :password)
-		end
+	def user_params
+		params.require(:user).permit(:username, :password)
+	end
 
 end
